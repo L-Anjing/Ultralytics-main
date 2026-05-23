@@ -184,8 +184,7 @@ def best_onnx_opset(onnx, cuda=False) -> int:
 
 
 def validate_args(format, passed_args, valid_args):
-    """
-    Validate arguments based on the export format.
+    """Validate arguments based on the export format.
 
     Args:
         format (str): The export format.
@@ -239,8 +238,7 @@ def try_export(inner_func):
 
 
 class Exporter:
-    """
-    A class for exporting YOLO models to various formats.
+    """A class for exporting YOLO models to various formats.
 
     This class provides functionality to export YOLO models to different formats including ONNX, TensorRT, CoreML,
     TensorFlow, and others. It handles format validation, device selection, model preparation, and the actual export
@@ -290,8 +288,7 @@ class Exporter:
     """
 
     def __init__(self, cfg=DEFAULT_CFG, overrides=None, _callbacks=None):
-        """
-        Initialize the Exporter class.
+        """Initialize the Exporter class.
 
         Args:
             cfg (str, optional): Path to a configuration file.
@@ -653,15 +650,15 @@ class Exporter:
         #         dynamic["output1"] = {0: "batch", 2: "mask_height", 3: "mask_width"}  # shape(1,32,160,160)
         #     elif isinstance(self.model, DetectionModel):
         #         dynamic["output0"] = {0: "batch", 2: "anchors"}  # shape(1, 84, 8400)
-        output_names = ['output0', 'output1'] if isinstance(self.model, SegmentationModel) else ['output0']
+        output_names = ["output0", "output1"] if isinstance(self.model, SegmentationModel) else ["output0"]
         dynamic = self.args.dynamic
         if dynamic:
-            dynamic = {'images': {0: 'batch'}}  # shape(1,3,640,640)
+            dynamic = {"images": {0: "batch"}}  # shape(1,3,640,640)
             if isinstance(self.model, SegmentationModel):
-                dynamic['output0'] = {0: 'batch'}  # shape(1, 116, 8400)
-                dynamic['output1'] = {0: 'batch'}  # shape(1,32,160,160)
+                dynamic["output0"] = {0: "batch"}  # shape(1, 116, 8400)
+                dynamic["output1"] = {0: "batch"}  # shape(1,32,160,160)
             elif isinstance(self.model, DetectionModel):
-                dynamic['output0'] = {0: 'batch', 2: 'anchors'}  # shape(1, 84, 8400)
+                dynamic["output0"] = {0: "batch", 2: "anchors"}  # shape(1, 84, 8400)
 
             if self.args.nms:  # only batch size is dynamic with NMS
                 dynamic["output0"].pop(2)
@@ -1432,8 +1429,7 @@ class IOSDetectModel(torch.nn.Module):
     """Wrap an Ultralytics YOLO model for Apple iOS CoreML export."""
 
     def __init__(self, model, im, mlprogram=True):
-        """
-        Initialize the IOSDetectModel class with a YOLO model and example image.
+        """Initialize the IOSDetectModel class with a YOLO model and example image.
 
         Args:
             model (torch.nn.Module): The YOLO model to wrap.
@@ -1467,8 +1463,7 @@ class NMSModel(torch.nn.Module):
     """Model wrapper with embedded NMS for Detect, Segment, Pose and OBB."""
 
     def __init__(self, model, args):
-        """
-        Initialize the NMSModel.
+        """Initialize the NMSModel.
 
         Args:
             model (torch.nn.Module): The model to wrap with NMS postprocessing.
@@ -1481,15 +1476,14 @@ class NMSModel(torch.nn.Module):
         self.is_tf = self.args.format in frozenset({"saved_model", "tflite", "tfjs"})
 
     def forward(self, x):
-        """
-        Perform inference with NMS post-processing. Supports Detect, Segment, OBB and Pose.
+        """Perform inference with NMS post-processing. Supports Detect, Segment, OBB and Pose.
 
         Args:
             x (torch.Tensor): The preprocessed tensor with shape (N, 3, H, W).
 
         Returns:
-            (torch.Tensor): List of detections, each an (N, max_det, 4 + 2 + extra_shape) Tensor where N is the
-                number of detections after NMS.
+            (torch.Tensor): List of detections, each an (N, max_det, 4 + 2 + extra_shape) Tensor where N is the number
+                of detections after NMS.
         """
         from functools import partial
 
